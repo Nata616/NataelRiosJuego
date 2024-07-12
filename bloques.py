@@ -47,7 +47,7 @@ ball = {
 bricks = []
 brick_width = 50
 brick_height = 20
-for _ in range(3):  
+for _ in range(25):  
     brick_x = randint(20, WIDTH - brick_width)
     brick_y = randint(20, HEIGHT // 2 - brick_height)
     brick = {
@@ -60,6 +60,36 @@ for _ in range(3):
     }
     bricks.append(brick)
 
+# Laser
+lasers = []
+
+def move_and_draw_lasers(screen, lasers, bricks):
+    for laser in lasers[:]:
+        laser['rect'].y += laser['speed_y']
+        
+        if laser['rect'].bottom < 0:
+            lasers.remove(laser)
+            continue
+        
+        for brick in bricks[:]:
+            if laser['rect'].colliderect(brick['rect']):
+                bricks.remove(brick)
+                sounds["laser_explosion"].play()
+        
+        pygame.draw.rect(screen, laser['color'], laser['rect'])
+
+def shoot_laser():
+    brick_break_counter = 0 
+    if brick_break_counter == 0:
+        laser = {
+            "rect": pygame.Rect(player['rect'].centerx, player['rect'].top - 10, 5, 10),
+            "color": (BLUE),  
+            "speed_y": -10 
+        }
+        lasers.append(laser)
+        sounds["laser_sound"].play()
+    else:
+        sounds["charge_error"].play()
 
 def draw_blocks(screen, blocks):
     """
@@ -89,6 +119,7 @@ def move_ball(ball, player, bricks, score, life):
     Returns:
         tuple: Tupla que contiene la puntuación actualizada y las vidas restantes.
     """
+    brick_break_counter = 0
     ball['rect'].x += ball['speed_x']
     ball['rect'].y += ball['speed_y']
     
@@ -121,13 +152,18 @@ def move_ball(ball, player, bricks, score, life):
             
             brick['rect'].width //= 2
             brick['rect'].height //= 2
-            score += 1  
+            score += 1 
+            brick_break_counter += 1 
 
             sounds["explosion"].play()
 
             if brick['rect'].width < 10 or brick['rect'].height < 10:
                 bricks.remove(brick)
-    
+
+            if brick_break_counter >= 3:
+                lasers.append()
+                sounds["rayo_cargado"].play()
+                brick_break_counter = 0
     
     if ball['rect'].top >= HEIGHT:
         life -= 1

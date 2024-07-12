@@ -31,5 +31,9 @@
     "menu_close": "./source/audios/menu_close.mp3",
     "explosion": "./source/audios/explosion.mp3",
     "golpe_paleta": "./source/audios/golpe_paleta.mp3",
-    "caida": "./source/audios/caida.mp3"
+    "caida": "./source/audios/caida.mp3",
+    "charge_error": "./source/audios/charge_error.mp3",
+    "laser_explosion": "./source/audios/laser_explosion.mp3",
+    "rayo_cargado": "./source/audios/rayo_cargado.mp3",
+    "laser_sound": "./source/audios/laser_sound.mp3"
 }

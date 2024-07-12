@@ -9,7 +9,6 @@ from pygame.locals import *
 from menu_functions import *
 
 
-
 pygame.init()
 pygame.mixer.init()
 
@@ -47,7 +46,8 @@ pygame.mixer.music.set_volume(0.1)
 
 # score
 score = 0
-lives = 3
+lives = 5
+brick_break_counter = 0 
 
 # menu
 
@@ -62,6 +62,7 @@ pygame.display.flip()
 wait_user(K_SPACE)
 
 
+menu_items = ["Arcade", "Options", "Exit"]
 def draw_main_menu():
     """Dibuja el menu de seleccion de escenario
     """
@@ -78,7 +79,6 @@ def draw_main_menu():
 
 
 # bucle principal
-menu_items = ["Arcade", "Options", "Exit"]
 is_running = True
 in_main_menu = True
 in_stage_menu = False
@@ -154,7 +154,6 @@ while is_running:
                     sounds["option_select"].play()
                 elif evento.key == pygame.K_ESCAPE:
                     sounds["menu_close"].play()
-                    
                     in_options_menu = False
                     in_main_menu = True
 
@@ -272,10 +271,13 @@ while is_running:
                 player['rect'].left = 0
             if player['rect'].right > WIDTH:
                 player['rect'].right = WIDTH
+            elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:  # Detectar clic izquierdo
+                shoot_laser()
         
         pygame.mixer.music.set_volume(music_volume)
         pygame.mixer.music.set_volume(sound_volume)
         score, lives = move_ball(ball, player, bricks, score, lives)
+        move_and_draw_lasers(screen, lasers, bricks)
         move_bricks(bricks)
         draw_blocks(screen, [player])
         draw_blocks(screen, bricks)
@@ -303,7 +305,7 @@ while is_running:
             ready_sound_played = False
             go_sound_played = False
             score = 0
-            lives = 3
+            lives = 1
 
         if lives <= 0:
                 pygame.mixer.music.load(music["yo_antes_era_como_tu"])
@@ -332,7 +334,7 @@ while is_running:
                     show_top_scores(screen)
                     in_main_menu = True
                     score = 0
-                    lives = 3
+                    lives = 1
 
     pygame.display.flip()
     clock.tick(FPS)
